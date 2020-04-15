@@ -36,7 +36,6 @@ namespace PersonTableSQL
                     break;
                 case 2:
                     SelectAll(con);
-                    Console.WriteLine("----------");
                     break;
                 case 3:
                     Console.Write("Выберите id: ");

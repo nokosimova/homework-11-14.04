@@ -10,6 +10,10 @@ namespace PersonTableSQL
         {
             const string conString  = @"Data source=KosimovaNodira; Initial catalog = Alif_Academy; Integrated Security=True"; 
             SqlConnection con = new SqlConnection(conString);
+            int    command, id;
+            int    year, month, day;
+            string firstname,  lastname, middlename, dt;
+
             con.Open();//open connection 
             Console.WriteLine("//----------------Добро пожаловать в работу с таблицей Person-------------//");
             Console.WriteLine("Выберите команду: ");
@@ -18,21 +22,24 @@ namespace PersonTableSQL
             Console.WriteLine("Выбрать один по id -- 3");
             Console.WriteLine("Обновить ------------ 4");
             Console.WriteLine("Удалить ------------- 5");
-            int command  = int.Parse(Console.ReadLine());
-            int id;
-            string firstname, lastname, middlename, datetime;
+            command = int.Parse(Console.ReadLine());
             switch(command)
             {
                 case 1:
                     Console.Write("фамилия: ");
                     firstname = Console.ReadLine();
+
                     Console.Write("имя: ");
                     lastname = Console.ReadLine();
+                    
                     Console.Write("отчество: ");
                     middlename = Console.ReadLine();
-                    Console.Write("ДР в формате (yy-mm-dd hh:mm:ss) ");
-                    datetime = Console.ReadLine();
-                    Insert(con, firstname, lastname, middlename, datetime);
+                    
+                    Console.Write("ДР в формате (yyyy-mm-dd hh:mm:ss) ");
+                    dt = Console.ReadLine();
+                    
+                    Insert(con, firstname, lastname, middlename, dt);
+                    
                     break;
                 case 2:
                     SelectAll(con);
@@ -45,16 +52,28 @@ namespace PersonTableSQL
                 case 4:
                     Console.Write("Выберите id: ");
                     id = int.Parse(Console.ReadLine());
+
                     Console.WriteLine("Новые данные: ");
                     Console.Write("фамилия: ");
                     firstname = Console.ReadLine();
+                    
                     Console.Write("имя: ");
                     lastname = Console.ReadLine();
+                    
                     Console.Write("отчество: ");
                     middlename = Console.ReadLine();
-                    Console.Write("ДР в формате (yy-mm-dd hh:mm:ss) ");
-                    datetime = Console.ReadLine();
-                    Update(con, id, firstname, lastname, middlename, datetime);
+                    
+                    Console.Write("Год рождения: ");
+                    year = int.Parse(Console.ReadLine());
+
+                    Console.Write("Месяц: ");
+                    month = int.Parse(Console.ReadLine());
+
+                    Console.Write("День: ");
+                    day = int.Parse(Console.ReadLine());
+                    
+                    DateTime datetime = new DateTime(year, month, day);
+                    Update(con, id, firstname, lastname, middlename, datetime.ToShortDateString());
                     break;
                 case 5:
                     Console.Write("Выберите id: ");

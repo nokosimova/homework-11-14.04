@@ -10,34 +10,64 @@ namespace PersonTableSQL
         {
             const string conString  = @"Data source=KosimovaNodira; Initial catalog = Alif_Academy; Integrated Security=True"; 
             SqlConnection con = new SqlConnection(conString);
-
             con.Open();//open connection 
-
-            Insert(con,"Mirov","Muhammad","Maqsudovich","2000-12-12 05:45:48");
-
-            SelectAll(con);
-
-            //SELECT BY ID realization:
-            string  commandText = $"Select * from Person where Person.id = {8}";
-            SqlCommand command = new SqlCommand(commandText, con);
-            var reader = command.ExecuteReader();
-            while (reader.Read())
+            Console.WriteLine("//----------------Добро пожаловать в работу с таблицей Person-------------//");
+            Console.WriteLine("Выберите команду: ");
+            Console.WriteLine("Добавить ------------ 1");
+            Console.WriteLine("Выбрать всё --------- 2");
+            Console.WriteLine("Выбрать один по id -- 3");
+            Console.WriteLine("Обновить ------------ 4");
+            Console.WriteLine("Удалить ------------- 5");
+            int command  = int.Parse(Console.ReadLine());
+            int id;
+            string firstname, lastname, middlename, datetime;
+            switch(command)
             {
-                System.Console.WriteLine($"id :{reader.GetValue("id")} | {reader.GetValue("FirstName")} | {reader.GetValue("LastName")} | {reader.GetValue("MiddleName")} | {reader.GetValue("BirthDate")}");
+                case 1:
+                    Console.Write("фамилия: ");
+                    firstname = Console.ReadLine();
+                    Console.Write("имя: ");
+                    lastname = Console.ReadLine();
+                    Console.Write("отчество: ");
+                    middlename = Console.ReadLine();
+                    Console.Write("ДР в формате (yy-mm-dd hh:mm:ss) ");
+                    datetime = Console.ReadLine();
+                    Insert(con, firstname, lastname, middlename, datetime);
+                    break;
+                case 2:
+                    SelectAll(con);
+                    Console.WriteLine("----------");
+                    break;
+                case 3:
+                    Console.Write("Выберите id: ");
+                    id = int.Parse(Console.ReadLine());
+                    SelectById(con, id);
+                    break;
+                case 4:
+                    Console.Write("Выберите id: ");
+                    id = int.Parse(Console.ReadLine());
+                    Console.WriteLine("Новые данные: ");
+                    Console.Write("фамилия: ");
+                    firstname = Console.ReadLine();
+                    Console.Write("имя: ");
+                    lastname = Console.ReadLine();
+                    Console.Write("отчество: ");
+                    middlename = Console.ReadLine();
+                    Console.Write("ДР в формате (yy-mm-dd hh:mm:ss) ");
+                    datetime = Console.ReadLine();
+                    Update(con, id, firstname, lastname, middlename, datetime);
+                    break;
+                case 5:
+                    Console.Write("Выберите id: ");
+                    id = int.Parse(Console.ReadLine());
+                    DeleteById(con, id);
+                    break;
+                default:
+                    break;
             }
-            reader.Close();
+            Console.WriteLine("----------");
+            con.Close();
 
-            //UPDATE realization:
-            commandText = $"Update Person set FirstName = 'Tomiris', MiddleName = 'Shukurova' where Person.id = {8}";
-            command = new SqlCommand(commandText, con);
-            reader = command.ExecuteReader();
-            reader.Close();
-
-            //DELETE by id realization:
-            commandText = $"Delete from Person where Person.id = {9}";
-            command = new SqlCommand(commandText, con);
-            reader = command.ExecuteReader();
-            reader.Close();
         }
         
  /*-----------------INSERT - FUNCTION----------------- */
@@ -46,6 +76,9 @@ namespace PersonTableSQL
             string insertSqlCommand = string.Format($"insert into Person([FirstName],[LastName],[MiddleName],[BirthDate]) Values('{firstname}', '{lastname}','{middlename}','{datetime}')");
             SqlCommand command = new SqlCommand(insertSqlCommand, con);
             var result = command.ExecuteNonQuery();
+            if (result > 0) {
+                Console.WriteLine("Данные успешно добавлены!");
+            }
         } 
 /*------------------SELECT ALL - FUNCTION------------- */
         static void SelectAll(SqlConnection con)
@@ -84,8 +117,10 @@ namespace PersonTableSQL
         {
             string commandText = $"Delete from Person where Person.id = {id}";
             SqlCommand command = new SqlCommand(commandText, con);
-            var reader = command.ExecuteReader();
-            reader.Close();
+            var result = command.ExecuteNonQuery();
+            if (result > 0) {
+                Console.WriteLine("Данные успешно удалены!");
+            }
 
         }
     }

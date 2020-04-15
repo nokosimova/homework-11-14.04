@@ -12,15 +12,31 @@ namespace PersonTableSQL
             SqlConnection con = new SqlConnection(conString);
 
             con.Open();//open connection 
-            
+
+            //INSERT realization:
+            string insertSqlCommand = string.Format($"insert into Person([FirstName],[LastName],[BirthDate]) Values('{"Testov"}', '{"Test"}','{"2020-04-15 00:00:00"}')");
+            SqlCommand command = new SqlCommand(insertSqlCommand, con);
+       //     var result = command.ExecuteNonQuery();
+
+            //SELECT ALL realization:
             string commandText = "Select * from Person";
-            SqlCommand command = new SqlCommand(commandText,con);
+            command = new SqlCommand(commandText, con);
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                Console.WriteLine($"ID:{reader.GetValue(0)}, FirstName: {reader.GetValue(1)},LastName: {reader.GetValue(2)}");
+                System.Console.WriteLine($"id :{reader.GetValue("id")} | {reader.GetValue("FirstName")} | {reader.GetValue("LastName")} | {reader.GetValue("MiddleName")} | {reader.GetValue("BirthDate")}");
             }
+            reader.Close();
 
+            //SELECT BY ID realization:
+            commandText = $"Select * from Person where Person.id = {8}";
+            command = new SqlCommand(commandText, con);
+            reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                System.Console.WriteLine($"id :{reader.GetValue("id")} | {reader.GetValue("FirstName")} | {reader.GetValue("LastName")} | {reader.GetValue("MiddleName")} | {reader.GetValue("BirthDate")}");
+            }
+            reader.Close();
 
         }
     }

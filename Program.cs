@@ -16,7 +16,7 @@ namespace PersonTableSQL
             //INSERT realization:
             string insertSqlCommand = string.Format($"insert into Person([FirstName],[LastName],[BirthDate]) Values('{"Testov"}', '{"Test"}','{"2020-04-15 00:00:00"}')");
             SqlCommand command = new SqlCommand(insertSqlCommand, con);
-       //     var result = command.ExecuteNonQuery();
+            var result = command.ExecuteNonQuery();
 
             //SELECT ALL realization:
             string commandText = "Select * from Person";
@@ -38,6 +38,17 @@ namespace PersonTableSQL
             }
             reader.Close();
 
+            //UPDATE realization:
+            commandText = $"Update Person set FirstName = 'Tomiris', MiddleName = 'Shukurova' where Person.id = {8}";
+            command = new SqlCommand(commandText, con);
+            reader = command.ExecuteReader();
+            reader.Close();
+
+            //DELETE by id realization:
+            commandText = $"Delete from Person where Person.id = {9}";
+            command = new SqlCommand(commandText, con);
+            reader = command.ExecuteReader();
+            reader.Close();
         }
     }
 }

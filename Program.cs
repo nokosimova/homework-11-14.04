@@ -12,9 +12,9 @@ namespace PersonTableSQL
             SqlConnection con = new SqlConnection(conString);
             int    command, id;
             int    year, month, day;
-            string firstname,  lastname, middlename, dt;
+            string firstname,  lastname, middlename;
 
-            con.Open();//open connection 
+            con.Open(); //open connection 
             Console.WriteLine("//----------------Добро пожаловать в работу с таблицей Person-------------//");
             Console.WriteLine("Выберите команду: ");
             Console.WriteLine("Добавить ------------ 1");
@@ -23,6 +23,7 @@ namespace PersonTableSQL
             Console.WriteLine("Обновить ------------ 4");
             Console.WriteLine("Удалить ------------- 5");
             command = int.Parse(Console.ReadLine());
+
             switch(command)
             {
                 case 1:
@@ -35,11 +36,18 @@ namespace PersonTableSQL
                     Console.Write("отчество: ");
                     middlename = Console.ReadLine();
                     
-                    Console.Write("ДР в формате (yyyy-mm-dd hh:mm:ss) ");
-                    dt = Console.ReadLine();
+                    Console.Write("Год рождения: ");
+                    year = int.Parse(Console.ReadLine());
+
+                    Console.Write("Месяц: ");
+                    month = int.Parse(Console.ReadLine());
+
+                    Console.Write("День: ");
+                    day = int.Parse(Console.ReadLine());
                     
-                    Insert(con, firstname, lastname, middlename, dt);
-                    
+                    DateTime dt = new DateTime(year, month, day);
+
+                    Insert(con, firstname, lastname, middlename, dt.ToShortDateString());
                     break;
                 case 2:
                     SelectAll(con);
@@ -47,6 +55,7 @@ namespace PersonTableSQL
                 case 3:
                     Console.Write("Выберите id: ");
                     id = int.Parse(Console.ReadLine());
+
                     SelectById(con, id);
                     break;
                 case 4:
@@ -73,11 +82,13 @@ namespace PersonTableSQL
                     day = int.Parse(Console.ReadLine());
                     
                     DateTime datetime = new DateTime(year, month, day);
+
                     Update(con, id, firstname, lastname, middlename, datetime.ToShortDateString());
                     break;
                 case 5:
                     Console.Write("Выберите id: ");
                     id = int.Parse(Console.ReadLine());
+
                     DeleteById(con, id);
                     break;
                 default:
@@ -85,7 +96,7 @@ namespace PersonTableSQL
             }
             Console.WriteLine("----------");
             con.Close();
-
+            Console.ReadKey();
         }
         
  /*-----------------INSERT - FUNCTION----------------- */
@@ -93,6 +104,7 @@ namespace PersonTableSQL
         {
             string insertSqlCommand = string.Format($"insert into Person([FirstName],[LastName],[MiddleName],[BirthDate]) Values('{firstname}', '{lastname}','{middlename}','{datetime}')");
             SqlCommand command = new SqlCommand(insertSqlCommand, con);
+            
             var result = command.ExecuteNonQuery();
             if (result > 0) {
                 Console.WriteLine("Данные успешно добавлены!");
@@ -103,6 +115,7 @@ namespace PersonTableSQL
         {
             string commandText = "Select * from Person";
             SqlCommand command = new SqlCommand(commandText, con);
+            
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -115,6 +128,7 @@ namespace PersonTableSQL
         {
             string  commandText = $"Select * from Person where Person.id = {id}";
             SqlCommand command = new SqlCommand(commandText, con);
+            
             var reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -127,14 +141,18 @@ namespace PersonTableSQL
         {
             string commandText = $"Update Person set FirstName = '{firstname}', LastName = '{lastname}',MiddleName = '{middlename}', BirthDate = '{datetime}' where Person.id = {id}";
             SqlCommand command = new SqlCommand(commandText, con);
-            var  reader = command.ExecuteReader();
-            reader.Close();
+            
+            var result = command.ExecuteNonQuery();
+            if (result > 0) {
+                Console.WriteLine("Данные успешно изменены!");
+            }
         }    
 /*-----------------DELETE by ID - FUNCTION----------------- */
         static void DeleteById(SqlConnection con, int id)
         {
             string commandText = $"Delete from Person where Person.id = {id}";
             SqlCommand command = new SqlCommand(commandText, con);
+            
             var result = command.ExecuteNonQuery();
             if (result > 0) {
                 Console.WriteLine("Данные успешно удалены!");

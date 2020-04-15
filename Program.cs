@@ -13,10 +13,8 @@ namespace PersonTableSQL
 
             con.Open();//open connection 
 
-            //INSERT realization:
             Insert(con,"Mirov","Muhammad","Maqsudovich","2000-12-12 05:45:48");
 
-            //SELECT ALL realization:
             SelectAll(con);
 
             //SELECT BY ID realization:
@@ -42,24 +40,14 @@ namespace PersonTableSQL
             reader.Close();
         }
         
-
-        /* SqlConnection con = new SqlConnection(conString);
-
-            con.Open();//open connection 
-
-            //INSERT realization:
-            string insertSqlCommand = string.Format($"insert into Person([FirstName],[LastName],[BirthDate]) Values('{"Testov"}', '{"Test"}','{"2020-04-15 00:00:00"}')");
-            SqlCommand command = new SqlCommand(insertSqlCommand, con);
-            var result = command.ExecuteNonQuery();
- */
- /*-----------------INSERT FUNCTION----------------- */
+ /*-----------------INSERT - FUNCTION----------------- */
         static void Insert(SqlConnection con, string firstname, string lastname, string middlename, string datetime)
         {
             string insertSqlCommand = string.Format($"insert into Person([FirstName],[LastName],[MiddleName],[BirthDate]) Values('{firstname}', '{lastname}','{middlename}','{datetime}')");
             SqlCommand command = new SqlCommand(insertSqlCommand, con);
             var result = command.ExecuteNonQuery();
         } 
-/*------------------SELECT ALL FUNCTION------------- */
+/*------------------SELECT ALL - FUNCTION------------- */
         static void SelectAll(SqlConnection con)
         {
             string commandText = "Select * from Person";
@@ -70,6 +58,35 @@ namespace PersonTableSQL
                 System.Console.WriteLine($"id :{reader.GetValue("id")} | {reader.GetValue("FirstName")} | {reader.GetValue("LastName")} | {reader.GetValue("MiddleName")} | {reader.GetValue("BirthDate")}");
             }
             reader.Close();
+        }
+/*-----------------SELECT by ID - FUNCTION----------------- */
+        static void SelectById(SqlConnection con, int id)
+        {
+            string  commandText = $"Select * from Person where Person.id = {id}";
+            SqlCommand command = new SqlCommand(commandText, con);
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                System.Console.WriteLine($"id :{reader.GetValue("id")} | {reader.GetValue("FirstName")} | {reader.GetValue("LastName")} | {reader.GetValue("MiddleName")} | {reader.GetValue("BirthDate")}");
+            }
+            reader.Close();
+        }
+/*-----------------UPDATE - FUNCTION----------------- */
+        static void Update(SqlConnection con, int id, string firstname, string lastname, string middlename, string datetime)
+        {
+            string commandText = $"Update Person set FirstName = '{firstname}', LastName = '{lastname}',MiddleName = '{middlename}', BirthDate = '{datetime}' where Person.id = {id}";
+            SqlCommand command = new SqlCommand(commandText, con);
+            var  reader = command.ExecuteReader();
+            reader.Close();
+        }    
+/*-----------------DELETE by ID - FUNCTION----------------- */
+        static void DeleteById(SqlConnection con, int id)
+        {
+            string commandText = $"Delete from Person where Person.id = {id}";
+            SqlCommand command = new SqlCommand(commandText, con);
+            var reader = command.ExecuteReader();
+            reader.Close();
+
         }
     }
 }
